@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>單元格合並,th標簽</title>
+</head>
+<body>
+    <!--
+        row 行 col 例
+        rowspan="個數" 行合並
+        row合並時删除下面的單元格
+        col合並時無所謂
+    -->
+    <table border="1px" width="30%">
+        <tr>
+            <!--
+            th 也是單元格標簽，比td多加粗和居中
+            -->
+            <th>編號</th>
+            <th>薪資</th>
+            <th>部名</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>5</td>
+            <td rowspan="2">69</td>
+        </tr>
+        <tr>
+            <!--
+            <td>7</td>
+            -->
+            <td colspan="2">78</td>
+
+            <!--
+            <td>9</td>
+            -->
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>表單form</title>
+    </head>
+    <body>
+        <!--
+            在action中填寫提交的目標服務器（服務器地址）
+            192.168.111.3機器上的8080端口所對應的軟件
+        -->
+        <form action="http://192.168.111.3:8080/oa/save">
+            <!--
+                畫一個提交按鈕，使用input輸入域
+                type=submit時，表示該按鈕具有提交表單的能力
+                value=按鈕上顯示的文本
+                不寫name數據不會提交
+                action?name=value&name=value...
+
+                表單項寫了name属性的一律提交給服務器，不想提交這一項就不要寫name属性
+                當value爲空時，默認值是空string
+            -->
+            <input type="submit"/>
+            <input type="button" value="按鈕上顯示的文本"/>
+        </form>
+
+        <form action="http://localhost:8080/oa/login">
+            用戸名<input type="text" /><br>
+            密碼<input type="password" /><br>
+            <input type="submit" value="登入" />
+            <br><br>
+
+            <table>
+                <tr>
+                    <td>用戸名</td>
+                    <td><input type="text" name="username"/></td>
+                </tr>
+                <tr>
+                    <td>密碼</td>
+                    <td><input type="password" name="password"/></td>
+                </tr>
+                <tr align="center">
+                    <td colspan="2">
+                        <input type="submit" value="登入" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="reset" value="清空" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    </body>
+</html>

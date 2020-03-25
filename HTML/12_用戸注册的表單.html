@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>用戸注册的表單</title>
+    </head>
+    <body>
+        <!--method="post"隠藏提交信息-->
+        <form action="http://localhost:8080/jk/register" method="post">
+            用戸名<input type="text" name="username" /><br>
+            密碼<input type="password" name="userpwd" /><br>
+            確認密碼<input type="text" /><br>
+            性别<!--單選按鈕的value必須手動指定；checked 表示默認選中-->
+            <input type="radio" name="sex" value="1"/>男
+            <input type="radio" name="sex"value="0"/>女
+            <br>
+            愛好
+            <input type="checkbox" name="interest" value="sing"/>唱
+            <input type="checkbox" name="interest" value="dance"/>跳
+            <input type="checkbox" name="interest" value="rap"/>rap
+            <br>
+            學歴<select name="grade"><!--selected 表示默認選中-->
+            <option></option>
+            <option value="high">高中</option>
+            <option value="collage">本科</option>
+            <option value="shuoshi">碩士</option>
+            </select>
+            <br>
+            簡介<br><!--文本域沒有value属性-->
+            <textarea rows="10" cols="60" name="introduce" ></textarea>
+            <br>
+            <input type="submit" value="注册"/>
+            <input type="reset" value="清空"/>
+        </form>
+    </body>
+</html>

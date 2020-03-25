@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>file控件(提交文件用)</title>
+</head>
+<body>
+    <input type="file" />
+    <form action="http://localhost:8080/oa/save">
+        <!--隠藏域表面上看不到，但是提交時也會提交-->
+        <input type="hidden" name="userid" value="111" />
+        用戸代碼<input type="text" name="usercode" />
+        <input type="submit" value="提交" />
+    </form>
+</body>
+</html>
