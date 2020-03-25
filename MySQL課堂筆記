@@ -1,0 +1,616 @@
+MySQL
+
+1.sql、DB、DBMS分别是什麼，他們之間的關係？
+    DB：
+        DataBase（數據庫，數據庫在硬盤上以文件的形式存在）
+
+    DBMS:
+        DataBase Management System（數據庫管理系統，常見的有：Oracle MySQL DB2 Sybase SqlServer...)
+
+    SQL:
+        結構化查詢語言，是一門標準通用的語言。標準的sql適合於所有的數據庫産品。
+        SQL属於高級語言，衹要會英語就能看懂。
+        SQL語句在執行時，内部也會先編譯再執行sql（sql語句的編譯由DBMS完成。）
+
+    DBMS負責執行sql語句，通過執行sql語句來操作DB當中的數據。
+    DBMS -(執行)-> SQL-(操作)-> DB
+
+2.什麼是表？
+    表：table，是數據庫的基本組成單元，所有的數據都以表格的形式組織，目的是可讀性強。
+
+    一個表括行和列：
+        行：被稱爲“數據/記録”（data）
+        列：被稱爲“字段”（column）
+
+    學號(int)   姓名(varchar)  年齡(int)
+    ---------------------------------
+    110        張三           20
+    120        李四           21
+
+
+    每一個字段應該包括哪些属性？
+        字段名，數據類型，相關的約束。
+
+3.學習MySQL主要還是學習通用的sql語句，sql語句包括增删改查，sql語句如何分類？
+    DQL（數據查詢語言）：查詢語句，凡是select語句都是DQL。
+    DML（數據操作語言）：insert delete update，對表當中的數據進行增删改。
+    DDL（數據定義語言）：creat drop alter，對表結構的增删改。
+    TCL（事務控制語言）：commit提交事務，rollback回滚事務。（TCL中的T是Transaction）
+    DCL（數據控制語言）：grant授權，revoke撤銷權限等。
+
+4.導入數據（後期大家練習的時候使用演示的數據）
+    第一步：登入mysql數據管理系統
+        dos命令窗口：
+            mysql -uroot -p
+    第二步：查看有哪些數據庫
+        show databass;（這個不是sql語句，属於mysql的命令）
+        +--------------------+
+        | Database           |
+        +--------------------+
+        | information_schema |
+        | mysql              |
+        | performance_schema |
+        | sys                |
+        +--------------------+
+    第三步：創建属於我們自己的數據庫
+        create database hyoryu;（這個不是sql語句，属於mysql的命令）
+    第四步：使用hyoryu數據庫
+        use hyoryu;（這個不是sql語句，属於mysql的命令）
+    第五步：查看當前使用的數據庫中有哪些表？
+        show tables;
+    第六步：初始化數據
+        mysql> source 絶對路徑加文件名 這個不是sql語句，属於mysql的命令）
+
+5.上述第六步的文件以sql結尾，這樣的文件被稱爲“sql腳本”。什麼是sql腳本？
+    當一個的文件的擴展名是.sql，並且該文件中編寫了大量的sql語句，我們稱這樣的文件爲sql腳本。
+    注意：直接使用source命令可以執行sql腳本。
+    sql腳本中的數據量太大的時候，無法打開，請使用source命令完成初始化。
+
+6.删除數據庫：drop database bjpowernode;
+
+7.查看表結構：
+    +-----------------------+
+    | Tables_in_bjpowernode |
+    +-----------------------+
+    | dept                  |   （部門表）
+    | emp                   |   （員工表）
+    | salgrade              |   （工資等級表）
+    +-----------------------+
+
+mysql> desc dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| DEPTNO | int(2)      | NO   | PRI | NULL    |       |     部門編號
+| DNAME  | varchar(14) | YES  |     | NULL    |       |     部門名稱
+| LOC    | varchar(13) | YES  |     | NULL    |       |     部門位置
++--------+-------------+------+-----+---------+-------+
+
+mysql> desc emp;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| EMPNO    | int(4)      | NO   | PRI | NULL    |       |   員工編號
+| ENAME    | varchar(10) | YES  |     | NULL    |       |   員工姓名
+| JOB      | varchar(9)  | YES  |     | NULL    |       |   工作崗位
+| MGR      | int(4)      | YES  |     | NULL    |       |   上級領導編號
+| HIREDATE | date        | YES  |     | NULL    |       |   入職日期
+| SAL      | double(7,2) | YES  |     | NULL    |       |   月薪
+| COMM     | double(7,2) | YES  |     | NULL    |       |   補助/津貼
+| DEPTNO   | int(2)      | YES  |     | NULL    |       |   部門編號
++----------+-------------+------+-----+---------+-------+
+
+mysql> desc salgrade;
++-------+---------+------+-----+---------+-------+
+| Field | Type    | Null | Key | Default | Extra |
++-------+---------+------+-----+---------+-------+
+| GRADE | int(11) | YES  |     | NULL    |       |  等級
+| LOSAL | int(11) | YES  |     | NULL    |       |  最低薪資
+| HISAL | int(11) | YES  |     | NULL    |       |  最高薪資已
++-------+---------+------+-----+---------+-------+
+
+8.表中的數據？
+mysql> select * from emp;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1987-04-19 | 3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1987-05-23 | 1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
++-------+--------+-----------+------+------------+---------+---------+--------+
+
+mysql> select * from dept;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+
+mysql> select * from salgrade;
++-------+-------+-------+
+| GRADE | LOSAL | HISAL |
++-------+-------+-------+
+|     1 |   700 |  1200 |
+|     2 |  1201 |  1400 |
+|     3 |  1401 |  2000 |
+|     4 |  2001 |  3000 |
+|     5 |  3001 |  9999 |
++-------+-------+-------+
+
+9.常用命令：
+mysql> select database(); //查看當前所用數據庫
++-------------+
+| database()  |
++-------------+
+| bjpowernode |
++-------------+
+
+mysql> select version(); //查看mysql版本號
++-----------+
+| version() |
++-----------+
+| 8.0.18    |
++-----------+
+
+/c 結束一條語句
+
+exit 退出mysql
+
+10.查看創建表的語句：
+    show create table emp;
+
+11.簡單的查詢語句（DQL） 任何一條sql語句以封號結尾
+    語法格式：
+        select 字段名1,2,3 from 表名;
+    查詢全部 select * from emp; //實際開發中不建議使用
+    查詢員工的年薪？（字段可以參與數學運算）
+    select ename,sal * 12 from emp;
+    給查詢結果的列重命名：
+    select ename,sal * 12 (as) yearsal from emp;
+    select ename,sal * 12 (as) '年薪' from emp;
+
+12.條件查詢
+    select
+        字段,字段
+    from
+        表名
+    where
+        條件;
+
+   執行順序：先from 後where 後select
+
+    查詢工資等於5000的員工
+    select ename from emp where sal = 5000;
+    smith的工資
+    select sal from emp where ename = 'smith';
+    找出1100-3000的員工
+    select ename from emp where sal >= 1100 and sal <= 3000;
+    select ename from emp where between 1100 and 3000; //[1100,3000]
+    between..and.. 必須左小右大
+    非數字時
+    select ename from emp where ename between 'a' and 'c'; //['a','c')
+
+    找出哪些人沒有津貼？數據庫中null不是值，不能用=號衡量
+    select ename,sal,comm from emp where comm is (not) null;
+    select ename,sal,comm from emp where comm is null or comm = 0;
+
+    and or 合用 運算優先級不確定時加小括號
+    找出薪資大於1000並且部門是20或30的員工
+    select ename,sal,deptno from emp where sal > 1000 and (deptno = 20 or deptno = 30);
+
+    in等同於or
+    找出工作崗位是manager和salesman的員工
+    select ename,job from emp where job = 'salesman' or job = 'manager';
+    select ename,job from emp where job in('salesman','manager');
+    not in 不在這幾個值中
+
+    模糊查詢like（%代表任意多個字符，_代表任意一個字符）
+    找出含o的員工
+    where ename like '%o%';
+    找出名字中有下劃線的
+    '%\_%'
+
+    13.排序(默認是升序，asc表示升，desc表示降)
+    按照工資升序，找出員工名和薪資
+    select ename,sal from emp order by sal;
+    select ename,sal from emp order by sal asc;
+    select ename,sal from emp order by sal desc;
+
+    按工資降序排，若工資相同，按名字升序排
+    select ename,sal from emp order by sal desc , ename asc;
+
+    按第二列排序
+    select ename,sal from emp order by 2;
+
+    找出salesman，按工資升序排
+    select ename,sal,job from emp where job = 'salesman' order by sal;
+
+    14.分組函數(所有分組函數都是對某一組數據進行操作)
+        count 計數
+        sum 求和
+        avg 平均值
+        max
+        min
+
+        找出工資總和
+            select sum(sal) from emp;
+        總人數
+            select count(ename) from emp;
+
+        分組函數自動忽略null
+            select count(comm) from emp; //4
+
+        找出工資高於平均工資的員工
+            select ename,sal from emp where sal > avg(sal); //ERROR 1111 (HY000): Invalid use of group function
+            原因：分組函數不可使用在where當中
+            因爲group by在where之後才會執行，所以用不了執行順序更後的分組函數
+
+            select ename,sal from emp having sal > (select avg(sal) from emp);
+
+        count(*)計數總記録條數，count(字段)計算該字段不爲空的條數。
+
+    15.單行處理函數（數入一行，數出一行）
+        計算每個員工的年薪
+            select ename,(sal+comm) * 12 as yearsal from emp; //衹要運算中有null出現，最終結果一定是null
+            ifnull() 空處理函數(属於單行處理函數)
+            ifnull(前者可能爲空時,當作後者的值處理)
+            select ename,(sal+ifnull(comm,0)) * 12 as yearsal from emp;
+
+    16.group by 和 having
+        group by 按照某個字段或某些字段分組
+        having 對分組後的數據再次過濾
+
+        找出每個工作崗位的最高薪資
+            select job,max(sal) from emp group by job; //先執行分組再執行分組函數
+            分組函數通常和group by聯合使用，當sql語句中沒有group by，表自成一組
+
+            使用group by時，select後面衹能跟參加分組的字段和分組函數
+
+        找出每個部門不同崗位的最高薪資
+        select deptno,job,max(sal) from emp group by deptno,job;
+
+        找出每個部門最高薪資，要求顕示薪資大於2900的數據
+        select deptno,max(sal) from emp group by deptno;
+        select deptno,max(sal) from emp group by deptno having max(sal) > 2900; //這種方式效率低
+        select deptno,max(sal) from emp where sal > 2900 group by deptno; //推薦這樣寫
+
+        找出每個部門平均薪資，要求顕示薪資大於2000的數據
+        select deptno,avg(sal) from emp group by deptno having avg(sal) > 2000;
+
+    17.總結一個完整的DQL語句怎麼寫
+        select
+            ..
+        from
+            ..
+        where
+            ..
+        group by
+            ..
+        having
+            ..
+        order by
+            ..
+
+day02
+    1.查詢結果去重
+        select distinct deptno,job from emp; //distinct前不能出現字段
+
+        統計崗位的數量
+        select count(distinct job) from emp;
+
+    2.連接查詢
+        即多表查詢
+
+        根據連接方式劃分：
+        内連接
+            等值連接
+            非等值連接
+            自連接
+        外連接
+            左外連接
+            右外連接
+        全連接（很少用）
+
+        笛卡爾乘積現象：
+            找出每一個員工的部門名稱，要求顕示員工名和部門名稱
+                select deptno,ename from emp;
+                select * from dept;
+                select ename,dname from emp,dept; //14*4 = 56條結果
+
+            表的别名
+                select e.ename,d.dname from emp e,dept d; //14*4 = 56條結果
+                可讀性高，執行效率高
+
+                select e.ename,d.dname from emp e,dept d where e.deptno = d.deptno; //sql92，以後不用
+
+        内連接之等值連接：最大特點是條件是等量關係
+            上面例子的sql99:
+                select e.ename,d.dname from emp e (inner) join dept d on e.deptno = d.deptno;
+
+        内連接之非等值連接：非等量關係
+            找出員工的工資等級，顕示員工名，工資,工資等級
+                select
+                    e.ename,e.sal,s.grade
+                from
+                    emp e
+                (inner) join
+                    salgrade s
+                on
+                    e.sal between s.losal and s.hisal;
+
+        自連接：一張表看作兩張表
+            找出每個員工的上級領導
+                select
+                    e.ename,b.ename
+                from
+                    emp e
+                join
+                    emp b
+                on
+                    e.mgr = b.empno;
+
+        外連接（a,b表有主副之分，當副表中的數據不匹配主表，副表模擬出null與主表匹配）
+
+            左外連接：表示左邊的表是主表
+            右外連接：表示右邊的表是主表
+
+            找出每個員工的上級領導
+                select
+                    e.ename,b.ename
+                from
+                    emp e
+                left (outer) join
+                    emp b
+                on
+                    e.mgr = b.empno;
+
+            找出哪個部門沒有員工
+                select
+                   d.dname
+                from
+                    dept d
+                left join
+                    emp e
+                on
+                    d.deptno = e.deptno
+                where
+                    e.ename is null;
+
+        三張表：
+                a
+            join
+                b
+            on
+                ..
+            join
+                c
+            on
+                ..
+
+            找出每一個員工的部門名稱及工資等級
+                select
+                    e.ename,d.dname,s.grade
+                from
+                    emp e
+                join
+                    dept d
+                on
+                    e.deptno = d.deptno
+                join
+                    salgrade s
+                on
+                    e.sal between s.losal and s.hisal;
+
+            找出每一個員工的部門名稱及工資等級,及領導
+                select
+                    e.ename,d.dname,s.grade,b.ename
+                from
+                    emp e
+                join
+                    dept d
+                on
+                    e.deptno = d.deptno
+                join
+                    salgrade s
+                on
+                    e.sal between s.losal and s.hisal
+                left join
+                    emp b
+                on
+                    e.mgr = b.empno;
+
+
+    3.子查詢
+        select語句套娃
+        可以出現的位置：
+            select
+                ..(select).
+            from
+                ..(select).
+            where
+                ..(select).
+
+        where句中：找出高於平均工資的員工信息
+            select
+                e.*
+            from
+                emp e
+            where
+                e.sal >
+                (select
+                    avg(sal)
+                from
+                    emp);
+
+        from：找出每個部門平均工資的工資等級
+            select deptno,avg(sal) from emp group by deptno;
+
+            select
+                x.deptno,d.dname
+            from
+                (select deptno,avg(sal) as avgsal from emp group by deptno) x
+            join
+                salgrade s
+            on
+                x.avgsal between s.losal and hisal
+            join
+                dept d
+            on
+                x.deptno = d.deptno
+            order by
+                x.deptno;
+
+        找出每個部門平均的薪水等級
+            找出每個員工的薪水等級
+                select ename,sal from emp;
+                select e.ename,e.sal,e.deptno,s.grade from emp e join salgrade s on e.sal between s.losal and hisal;
+
+            第二步：基於以上結果，按照deptno分組，求grade平均值
+                select
+                    e.deptno,avg(s.grade)
+                from
+                    emp e
+                join
+                    salgrade s
+                on
+                    e.sal between s.losal and hisal
+                group by
+                    e.deptno;
+
+
+        select:找出每個員工所在的部門名稱，要求顕示員工名和部門名。
+            select
+                e.ename,d.dname
+            from
+                emp e
+            join
+                dept d
+            on
+                e.deptno = d.deptno;
+
+            select
+                e.ename,(select d.dname from dept d where e.deptno = d.deptno) as dname
+            from
+                emp e;
+
+    4.union(可以將查詢結果相加)
+        找出工作崗位是salesman和manager的員工
+            select e.ename,e.job from emp e where e.job in('salesman','manager');
+
+            select e.ename,e.job from emp e where e.job = 'salesman'
+            union
+            select e.ename,e.job from emp e where e.job = 'manager';
+
+    5.limit(重點 分頁查詢中使用)(是sql語句中最後一個執行的環節)
+        limit取結果集中的部分數據
+        語法：
+            limit startIndex, length
+            startIndex 起始位置
+            length 取幾個
+
+        取出工資前五名
+            select ename,sal from emp order by sal desc limit 0, 5;
+            select ename,sal from emp order by sal desc limit 5;
+
+            select ename,sal from emp order by sal desc limit 3, 6;
+
+        通用的標準分頁sql
+            每頁顕示3條：
+                第1頁：0,3
+                第2頁：3,3
+                第3頁：6,3
+                第4頁：9,3
+                第5頁：12,3
+                x(n-1) , n
+
+    6.創建表：
+        建表語句
+            create table 表名(
+                字段名1 數據類型，
+                字段名2 數據類型，
+                字段名3 數據類型，
+            );
+
+            常見數據類型
+            int     整型
+            bigint  長整型
+            float   浮點型
+            char    定長字符串
+            varchar 不定長字符串
+            date    日期型
+            BLOB    二進制大對象(圖片等)
+            CLOB    字符大對象(大文本)
+
+            char varchar 怎麼選
+            數據爲定長時用char，不定時用varchar
+
+            表名建議一般以t_或tbl_開始。
+
+            創建學生表：學號    姓名          性别  班級編號 生日
+                     bigint   varchar       char int    char
+
+            create table t_3(
+                no bigint,
+                name varchar(255),
+                性 char(1),
+                classno varchar(255),
+                birth char(10)
+            );
+
+            删表
+            drop table if exists t_3;
+
+    7.insert語句插入數據
+        語法：
+            insert into 表名(字段名1,2,3...) values(值1,2,3...);
+            要求字段數量和數據類型要相同
+
+            insert into t_student2(no,name,性,classno,birth) values(1,'zhangsan','1','gaosan','1950-10-12');
+
+            insert into t_student2
+                (no,name,性,classno,birth)
+            values
+                (1,'zhangsan','1','gaosan','1950-10-12'),
+                (...);
+
+    8.表的複制
+        create table emp1 as select * from emp;
+        將查詢結果當成表複制
+        insert into dept1 as select * from dept;
+        將查詢結果當成數據插入一張表中
+
+    10.修改表中數據
+        update 表名 set 字段名1=值1, 字段名2=值2...where 條件；
+        注意：沒有條件整張表全部更新
+
+        部門10地址改爲shanghai 名稱改爲renshibu
+        update dept1 set dname = 'renshibu',loc = 'shanghai' where dname = 'accounting';
+
+    11.删除數據
+        語法：delete from 表名 where 條件;
+        注意：沒有條件全删除
+
+        怎麼删除大表（重點）
+        truncate table emp1; //必須問清楚才能删
+
+
+
+
+
+
+
+
