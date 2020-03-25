@@ -1,0 +1,32 @@
+問題1.　店舗テーブル、売上テーブルを作成するSQLを書きなさい。
+　　　　各テーブルにレコードを登録するSQLを書きなさい。
+        create table t_store(
+            STORECD char,
+            SNAME varchar(255)
+        );
+
+        create table t_sales(
+            STORECD char,
+            BDAY bigint,
+            GOODSCD bigint,
+            SALES bigint,
+        );
+
+        insert into t_store
+            (STORECD,SNAME)
+        values
+            ('01','YOKOHAMA'),
+            ('02','TOKYO'),
+            ('03','OSAKA');
+
+        insert into t_store
+            (STORECD,BDAY,GOODSCD,SALES)
+        values
+            (char,bigint,bigint,bigint),
+            (char,bigint,bigint,bigint),
+            (...);
+
+問題2. SQL文で店舗一覧を検索して、店舗CDの昇順で表示する。
+　　　　※店舗CD、店舗名を抽出して表示する。
+
+        select STORECD,SNAME from t_store order by STORECD asc;
